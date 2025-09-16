@@ -1,9 +1,9 @@
-import { createClient, type GenericCtx } from "@convex-dev/better-auth";
-import { convex } from "@convex-dev/better-auth/plugins";
-import { components } from "./_generated/api";
-import { DataModel } from "./_generated/dataModel";
-import { query } from "./_generated/server";
-import { betterAuth } from "better-auth";
+import { createClient, type GenericCtx } from '@convex-dev/better-auth';
+import { convex } from '@convex-dev/better-auth/plugins';
+import { components } from './_generated/api';
+import { DataModel } from './_generated/dataModel';
+import { query } from './_generated/server';
+import { betterAuth } from 'better-auth';
 
 const siteUrl = process.env.SITE_URL!;
 
@@ -13,7 +13,7 @@ export const authComponent = createClient<DataModel>(components.betterAuth);
 
 export const createAuth = (
   ctx: GenericCtx<DataModel>,
-  { optionsOnly } = { optionsOnly: false },
+  { optionsOnly } = { optionsOnly: false }
 ) => {
   return betterAuth({
     // disable logging when createAuth is called just to generate options.
@@ -21,6 +21,7 @@ export const createAuth = (
     logger: {
       disabled: optionsOnly,
     },
+    trustedOrigins: ['http://localhost:3000'],
     baseUrl: siteUrl,
     database: authComponent.adapter(ctx),
     // Configure simple, non-verified email/password to get started
