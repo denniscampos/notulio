@@ -3,7 +3,11 @@
 import { authClient } from '@/lib/auth-client';
 import { useState } from 'react';
 
+type Status = 'idle' | 'loading' | 'success' | 'error';
+
 export function SignUpForm() {
+  const [status, setStatus] = useState<Status>('idle');
+  const [error, setError] = useState('');
   const [values, setValues] = useState({
     firstName: '',
     lastName: '',
@@ -13,6 +17,8 @@ export function SignUpForm() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setStatus('loading');
+    setError('');
     await authClient.signUp.email(
       {
         email: values.email as string,
@@ -21,10 +27,12 @@ export function SignUpForm() {
       },
       {
         onSuccess: async (ctx) => {
+          setStatus('success');
           console.log('User created: ', ctx.data);
         },
         onError: async (ctx) => {
-          console.error('Some error: ', ctx.error.message);
+          setStatus('error');
+          setError(ctx.error.message);
         },
       }
     );
@@ -61,8 +69,11 @@ export function SignUpForm() {
           value={values.password}
           onChange={(e) => setValues({ ...values, password: e.target.value })}
         />
-        <button type="submit">Sign Up</button>
+        <button disabled={status === 'loading'} type="submit">
+          {status === 'loading' ? 'Signing up...' : 'Sign Up'}
+        </button>
       </form>
+      {status === 'error' ? <p className="text-red-500">{error}</p> : null}
     </div>
   );
 }
