@@ -1,5 +1,6 @@
 'use client';
 import { authClient } from '@/lib/auth-client';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 type Status = 'idle' | 'loading' | 'success' | 'error';
@@ -10,6 +11,7 @@ export function SignInForm() {
     email: '',
     password: '',
   });
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -24,6 +26,8 @@ export function SignInForm() {
         setError(ctx.error.message);
       },
     });
+    router.push('/');
+    router.refresh();
   };
 
   return (

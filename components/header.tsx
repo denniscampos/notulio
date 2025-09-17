@@ -1,6 +1,11 @@
 import Link from 'next/link';
+import { SignOut } from './sign-out';
+import { getToken } from '@/lib/auth-server';
 
-export function Header() {
+export async function Header() {
+  const token = await getToken();
+  const isAuthed = !!token;
+
   return (
     <header className="flex justify-between items-center p-4">
       <h1>Notulio</h1>
@@ -17,8 +22,13 @@ export function Header() {
           </li>
         </ul>
       </nav>
-
-      <Link href="/sign-up">Sign Up</Link>
+      {isAuthed ? (
+        <SignOut />
+      ) : (
+        <Link href="/sign-in" className="text-blue-500 hover:text-blue-700">
+          Log in
+        </Link>
+      )}
     </header>
   );
 }

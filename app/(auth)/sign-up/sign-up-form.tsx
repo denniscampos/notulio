@@ -28,7 +28,6 @@ export function SignUpForm() {
       {
         onSuccess: async (ctx) => {
           setStatus('success');
-          console.log('User created: ', ctx.data);
         },
         onError: async (ctx) => {
           setStatus('error');
