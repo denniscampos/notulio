@@ -1,16 +1,24 @@
 import { createClient, type GenericCtx } from '@convex-dev/better-auth';
 import { convex } from '@convex-dev/better-auth/plugins';
-import { api, components } from './_generated/api';
+import { components } from './_generated/api';
 import { DataModel } from './_generated/dataModel';
 import { query } from './_generated/server';
 import { betterAuth, BetterAuthOptions } from 'better-auth';
 import { headers } from 'next/headers';
+import authSchema from './betterAuth/schema';
 
 const siteUrl = process.env.SITE_URL!;
 
 // The component client has methods needed for integrating Convex with Better Auth,
 // as well as helper methods for general use.
-export const authComponent = createClient<DataModel>(components.betterAuth);
+export const authComponent = createClient<DataModel, typeof authSchema>(
+  components.betterAuth,
+  {
+    local: {
+      schema: authSchema,
+    },
+  }
+);
 
 export const createAuth = (
   ctx: GenericCtx<DataModel>,

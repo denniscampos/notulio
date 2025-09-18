@@ -18,7 +18,7 @@ export async function createArticleMetadata({ url = '' }: { url: string }) {
   try {
     const token = await getToken();
     await fetchMutation(
-      api.mutations.createArticle,
+      api.articles.createArticle,
       {
         url,
         title: articleMetadata.title,
