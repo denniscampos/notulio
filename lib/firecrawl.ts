@@ -14,8 +14,10 @@ export async function getArticleMetadata({
   const doc = await firecrawl.scrape(url, { formats });
   return {
     title: doc.metadata?.title ?? 'No title found.',
-    author: doc.metadata?.author ?? 'No author found.',
+    // `author` is typed as an object from firecrawl for whatever reason.
+    author: (doc.metadata?.author as string) ?? 'No author found.',
     description: doc.metadata?.description ?? 'No description found',
     summary: doc.summary,
+    body: doc.markdown,
   };
 }
