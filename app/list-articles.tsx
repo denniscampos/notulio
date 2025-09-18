@@ -12,9 +12,9 @@ export function ListArticles() {
   );
   return (
     <div>
-      {isLoading ? (
-        <div>Loading...</div>
-      ) : (
+      {results.length === 0 ? (
+        <div>No articles found.</div>
+      ) : isLoading && results.length > 0 ? (
         results.map((article) => (
           <div className="flex flex-col gap-5" key={article._id}>
             <p>{article?.title}</p>
@@ -22,7 +22,7 @@ export function ListArticles() {
             <p>{article.url}</p>
           </div>
         ))
-      )}
+      ) : null}
 
       <button
         onClick={() => loadMore(ARTICLES_PER_PAGE)}
