@@ -11,6 +11,13 @@ export const createArticle = mutation({
     description: v.optional(v.string()),
     aiSummary: v.optional(v.string()),
     body: v.optional(v.string()),
+    tags: v.array(v.string()),
+    flashcards: v.array(
+      v.object({
+        question: v.string(),
+        answer: v.string(),
+      })
+    ),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();

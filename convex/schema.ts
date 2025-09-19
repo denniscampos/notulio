@@ -10,5 +10,12 @@ export default defineSchema({
     aiSummary: v.optional(v.string()),
     body: v.optional(v.string()),
     userId: v.string(),
+    tags: v.array(v.string()),
+    flashcards: v.array(
+      v.object({
+        question: v.string(),
+        answer: v.string(),
+      })
+    ),
   }).index('userId', ['userId']),
 });

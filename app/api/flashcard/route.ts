@@ -9,6 +9,9 @@ const FlashCardSchema = z.object({
       answer: z.string(),
     })
   ),
+  tags: z
+    .array(z.string())
+    .describe('short keywords, lowercase, hyphen-separated'),
 });
 
 export async function POST(req: Request) {
@@ -23,14 +26,33 @@ export async function POST(req: Request) {
   Content: """${content || 'Content unavailable'}"""
   
   Tasks:
-  1. Write a 2-3 sentence neutral summary.
-  2. Generate 5-10 Q&A flashcards depending on lenght of article.
-  3. Suggest 1 reflection question that connects with broader knowledge.
+  1. Generate 5–10 Q&A flashcards depending on the length of the article.
+     - Questions should be clear and concise.
+     - Answers should be short (1–3 sentences max).
+     - Focus on key ideas, definitions, or takeaways.
   
-  Return JSON following this schema with fields:
-  - summary (string)
-  - flashcards (array of { question, answer })
-  - reflection (string)
+  2. Suggest 1 reflection question that connects this article to broader knowledge or real-world applications.
+     - It should encourage critical thinking, not be fact recall.
+  
+  3. Suggest 3–5 topical tags for this article.
+     - Tags must be short, simple labels suitable for human tagging.
+     - Prefer ONE word; allow TWO words only if very common (e.g. "machine learning").
+     - No symbols, no hyphens, no jargon, no academic phrases.
+     - Use lowercase.
+     - Think of tags like those seen on blogs or news sites.
+     - Examples:
+       Good: ["database", "css", "technews", "women", "games"]
+       Acceptable 2 words: ["machine learning", "climate change"]
+       Bad: ["database management", "query-operations", "technical-process"]
+  
+  Return JSON in this format:
+  {
+    "flashcards": [
+      { "question": "...", "answer": "..." }
+    ],
+    "reflection": "...",
+    "tags": ["...", "..."]
+  }
   `;
 
   const { object } = await generateObject({

@@ -5,14 +5,21 @@ import { getArticleMetadata } from '@/lib/firecrawl';
 import { fetchMutation } from 'convex/nextjs';
 import { revalidatePath } from 'next/cache';
 
+interface FlashcardResponse {
+  flashcards: Array<{
+    question: string;
+    answer: string;
+  }>;
+  tags: Array<string>;
+}
+
 export async function createArticleMetadata({ url = '' }: { url: string }) {
-  // 1) Get scrape info
   const articleMetadata = await getArticleMetadata({
     url,
     formats: ['summary', 'markdown'],
   });
-  // 2) OpenAI to digest information and create flashcards.
-  const flashcards = await fetch('http://localhost:3000/api/flashcard', {
+
+  const response = await fetch('http://localhost:3000/api/flashcard', {
     method: 'POST',
     body: JSON.stringify({
       title: articleMetadata.title,
@@ -21,8 +28,9 @@ export async function createArticleMetadata({ url = '' }: { url: string }) {
     }),
     headers: { 'Content-Type': 'application/json' },
   });
-  console.log('flashcards: ', await flashcards.json());
-  // 3) Send info to convex DB.
+
+  const data = (await response.json()) as FlashcardResponse;
+
   try {
     const token = await getToken();
     await fetchMutation(
@@ -34,6 +42,8 @@ export async function createArticleMetadata({ url = '' }: { url: string }) {
         aiSummary: articleMetadata.summary,
         author: articleMetadata.author,
         body: articleMetadata.body,
+        flashcards: data.flashcards,
+        tags: data.tags,
       },
       { token }
     );
