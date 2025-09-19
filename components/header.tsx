@@ -7,7 +7,7 @@ export async function Header() {
   const isAuthed = !!token;
 
   return (
-    <header className="flex justify-between items-center p-4">
+    <header className="flex justify-between items-center p-4 shadow-md border-b-4">
       <h1>Notulio</h1>
       <nav>
         <ul className="flex gap-4">
