@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { SignOut } from './sign-out';
 import { getToken } from '@/lib/auth-server';
+import { ArticleDialog } from '@/app/article-dialog';
+import { buttonVariants } from './ui/button';
 
 export async function Header() {
   const token = await getToken();
@@ -8,7 +10,11 @@ export async function Header() {
 
   return (
     <header className="flex justify-between items-center p-4 shadow-md border-b-4">
-      <h1>Notulio</h1>
+      <span>
+        <Link className="font-bold" href="/">
+          Notulio
+        </Link>
+      </span>
       <nav>
         <ul className="flex gap-4">
           <li>
@@ -22,13 +28,20 @@ export async function Header() {
           </li>
         </ul>
       </nav>
-      {isAuthed ? (
-        <SignOut />
-      ) : (
-        <Link href="/sign-in" className="text-blue-500 hover:text-blue-700">
-          Log in
-        </Link>
-      )}
+
+      <div className="flex gap-4">
+        <ArticleDialog />
+        {isAuthed ? (
+          <SignOut />
+        ) : (
+          <Link
+            className={buttonVariants({ variant: 'neutral' })}
+            href="/sign-in"
+          >
+            Log in
+          </Link>
+        )}
+      </div>
     </header>
   );
 }

@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -17,7 +19,13 @@ import { Loader2 } from 'lucide-react';
 
 type Status = 'idle' | 'loading' | 'success' | 'error';
 
-export function ArticleDialog() {
+interface ArticleDialogProps {
+  buttonText?: string;
+}
+
+export function ArticleDialog({
+  buttonText = 'Add Article',
+}: ArticleDialogProps) {
   const [status, setStatus] = useState<Status>('idle');
   const [articleURL, setArticleURL] = useState<string>('');
 
@@ -35,7 +43,7 @@ export function ArticleDialog() {
     <Dialog>
       <form>
         <DialogTrigger asChild>
-          <Button>Add Your First Article</Button>
+          <Button>{buttonText}</Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px]">
           <form className="grid gap-4" onSubmit={handleArticleSubmit}>

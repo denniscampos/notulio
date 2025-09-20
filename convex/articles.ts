@@ -40,7 +40,6 @@ export const listArticles = query({
     const identity = await ctx.auth.getUserIdentity();
 
     if (!identity) {
-      // Return empty pagination result for unauthenticated users
       return {
         page: [],
         isDone: true,
