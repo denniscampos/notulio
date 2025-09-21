@@ -44,9 +44,11 @@ export async function POST(req: Request) {
        Good: ["database", "css", "technews", "women", "games"]
        Acceptable 2 words: ["machine learning", "climate change"]
        Bad: ["database management", "query-operations", "technical-process"]
+  4. Write a 2-3 sentence neutral summary.
   
   Return JSON in this format:
   {
+    "summary: "...",
     "flashcards": [
       { "question": "...", "answer": "..." }
     ],
