@@ -6,8 +6,9 @@ import { query } from './_generated/server';
 import { betterAuth, BetterAuthOptions } from 'better-auth';
 import { headers } from 'next/headers';
 import authSchema from './betterAuth/schema';
+import { env } from '@/env';
 
-const siteUrl = process.env.SITE_URL!;
+const siteUrl = env.SITE_URL;
 
 // The component client has methods needed for integrating Convex with Better Auth,
 // as well as helper methods for general use.
