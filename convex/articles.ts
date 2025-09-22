@@ -1,7 +1,8 @@
 import { mutation } from './_generated/server';
-import { v } from 'convex/values';
+import { ConvexError, v } from 'convex/values';
 import { query } from './_generated/server';
 import { paginationOptsValidator } from 'convex/server';
+import { authComponent } from './auth';
 
 export const createArticle = mutation({
   args: {
@@ -35,19 +36,21 @@ export const createArticle = mutation({
 });
 
 export const listArticles = query({
-  args: { paginationOpts: paginationOptsValidator },
+  args: {
+    paginationOpts: paginationOptsValidator,
+  },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
+    const user = await ctx.auth.getUserIdentity();
 
-    if (!identity) {
+    if (!user) {
       return {
-        page: [],
         isDone: true,
-        continueCursor: '',
+        page: [],
+        cursor: null,
       };
     }
 
-    const userId = identity.subject;
+    const userId = user.subject;
 
     return await ctx.db
       .query('articles')
