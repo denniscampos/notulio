@@ -3,6 +3,7 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { authClient } from '@/lib/auth-client';
+import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -33,7 +34,7 @@ export function SignUpForm() {
       {
         onSuccess: async (ctx) => {
           setStatus('success');
-          router.push('/');
+          router.push('/articles');
           router.refresh();
           toast.success('Successfully signed up');
         },
@@ -79,7 +80,13 @@ export function SignUpForm() {
           onChange={(e) => setValues({ ...values, password: e.target.value })}
         />
         <Button disabled={status === 'loading'} type="submit">
-          {status === 'loading' ? 'Signing up...' : 'Sign Up'}
+          {status === 'loading' ? (
+            <>
+              <Loader2 className="animate-spin" /> Signing up...
+            </>
+          ) : (
+            'Sign Up'
+          )}
         </Button>
       </form>
       {status === 'error' ? <p className="sr-only">{error}</p> : null}
