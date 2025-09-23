@@ -59,3 +59,39 @@ export const listArticles = query({
       .paginate(args.paginationOpts);
   },
 });
+
+export const updateArticle = mutation({
+  args: { id: v.id('articles'), title: v.string() },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new Error('Unauthorized');
+    }
+
+    const article = await ctx.db.get(args.id);
+    if (!article || article.userId !== identity.subject) {
+      throw new Error('Article not found or unauthorized');
+    }
+
+    await ctx.db.patch(args.id, { title: args.title });
+  },
+});
+
+export const removeArticle = mutation({
+  args: { id: v.id('articles') },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new Error('Unauthorized');
+    }
+
+    const article = await ctx.db.get(args.id);
+    if (!article || article.userId !== identity.subject) {
+      throw new Error('Article not found or unauthorized');
+    }
+
+    await ctx.db.delete(args.id);
+  },
+});
