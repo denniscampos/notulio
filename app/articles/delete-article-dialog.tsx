@@ -14,7 +14,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Trash2, AlertTriangle } from 'lucide-react';
+import { Trash2, AlertTriangle, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface DeleteArticleDialogProps {
@@ -41,22 +41,21 @@ export function DeleteArticleDialog({ article }: DeleteArticleDialogProps) {
       router.push('/articles');
       router.refresh();
     } catch (error) {
+      setIsDeleting(false);
       console.error('Failed to delete article:', error);
       toast.error('Failed to delete article');
-    } finally {
-      setIsDeleting(false);
     }
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="destructive" size="sm">
+        <Button className="bg-red-500" size="sm">
           <Trash2 className="size-4" />
           Delete
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] bg-white">
         <DialogHeader>
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100">
@@ -91,11 +90,18 @@ export function DeleteArticleDialog({ article }: DeleteArticleDialogProps) {
             Cancel
           </Button>
           <Button
-            variant="destructive"
+            className="bg-red-500"
             onClick={handleDelete}
             disabled={isDeleting}
           >
-            {isDeleting ? 'Deleting...' : 'Delete Article'}
+            {isDeleting ? (
+              <>
+                <Loader2 className="animate-spin" />
+                Deleting...
+              </>
+            ) : (
+              'Delete Article'
+            )}
           </Button>
         </div>
       </DialogContent>

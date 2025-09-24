@@ -79,7 +79,8 @@ export function ArticleDialog({
     e.preventDefault();
     setStatus('loading');
     try {
-      await createArticleMetadata(articleData);
+      const skipAiProcessing = autoFillStatus !== 'success';
+      await createArticleMetadata(articleData, { skipAiProcessing });
       setStatus('success');
       setOpen(false);
       // Reset form
