@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "concurrently \"pnpm run dev:frontend\" \"pnpm run dev:backend\"",
+    "dev:backend": "convex dev --typecheck-components --live-component-sources",
+    "dev:frontend": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start"
   },
@@ -38,6 +40,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "concurrently": "^9.2.1",
     "tailwindcss": "^4",
     "tw-animate-css": "^1.3.8",
     "typescript": "^5"

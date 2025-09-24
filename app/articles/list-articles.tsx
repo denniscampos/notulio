@@ -15,6 +15,7 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { ExternalLink, User, Calendar } from 'lucide-react';
 import { Search } from './search';
+import Link from 'next/link';
 
 // Colorful badge variants for tags
 const tagColors = [
@@ -114,103 +115,103 @@ export function ListArticles(props: {
       {/* Articles Grid */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {articlesQuery.page.map((article) => (
-          <Card
-            key={article._id}
-            className="h-fit hover:shadow-lg transition-shadow bg-secondary-background"
-          >
-            <CardHeader>
-              <div className="flex items-start justify-between gap-2">
-                <CardTitle className="line-clamp-2 text-lg">
-                  {article.title}
-                </CardTitle>
-                <a
-                  href={article.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="shrink-0 p-1 hover:bg-secondary-background rounded-base transition-colors"
-                  title="Open original article"
-                >
-                  <ExternalLink className="size-4" />
-                </a>
-              </div>
-              {article.description && (
-                <CardDescription className="line-clamp-3">
-                  {article.description}
-                </CardDescription>
-              )}
-            </CardHeader>
-
-            <CardContent className="space-y-4">
-              {/* Author */}
-              {article.author && (
-                <div className="flex items-center gap-2 text-sm text-foreground/60">
-                  <User className="size-4" />
-                  <span>{article.author}</span>
+          <Link key={article._id} href={`/articles/${article._id}`}>
+            <Card className="h-fit hover:shadow-lg transition-shadow bg-secondary-background cursor-pointer">
+              <CardHeader>
+                <div className="flex items-start justify-between gap-2">
+                  <CardTitle className="line-clamp-2 text-lg">
+                    {article.title}
+                  </CardTitle>
+                  <a
+                    href={article.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="shrink-0 p-1 hover:bg-secondary-background rounded-base transition-colors"
+                    title="Open original article"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <ExternalLink className="size-4" />
+                  </a>
                 </div>
-              )}
+                {article.description && (
+                  <CardDescription className="line-clamp-3">
+                    {article.description}
+                  </CardDescription>
+                )}
+              </CardHeader>
 
-              {/* AI Summary */}
-              {article.aiSummary && (
-                <div className="space-y-2">
-                  <h4 className="text-sm font-medium text-foreground/80">
-                    Summary
-                  </h4>
-                  <p className="text-sm text-foreground/70 line-clamp-3">
-                    {article.aiSummary}
-                  </p>
-                </div>
-              )}
+              <CardContent className="space-y-4">
+                {/* Author */}
+                {article.author && (
+                  <div className="flex items-center gap-2 text-sm text-foreground/60">
+                    <User className="size-4" />
+                    <span>{article.author}</span>
+                  </div>
+                )}
 
-              {/* Tags */}
-              {article.tags && article.tags.length > 0 && (
-                <div className="space-y-2">
-                  <h4 className="text-sm font-medium text-foreground/80">
-                    Tags
-                  </h4>
-                  <div className="flex flex-wrap gap-1">
-                    {(expandedTags.has(article._id)
-                      ? article.tags
-                      : article.tags.slice(0, 4)
-                    ).map((tag, index) => (
-                      <span
-                        key={index}
-                        className={`inline-flex items-center justify-center rounded-base border-2 px-2.5 py-0.5 text-xs font-base w-fit whitespace-nowrap shrink-0 ${getTagColor(
-                          tag
-                        )}`}
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                    {article.tags.length > 4 && (
-                      <button
-                        onClick={() => toggleExpandTags(article._id)}
-                        className="inline-flex items-center justify-center rounded-base border-2 px-2.5 py-0.5 text-xs font-base w-fit whitespace-nowrap shrink-0 bg-secondary-background text-foreground border-border hover:bg-border/50 transition-colors cursor-pointer"
-                      >
-                        {expandedTags.has(article._id)
-                          ? 'Show less'
-                          : `+${article.tags.length - 4} more`}
-                      </button>
-                    )}
+                {/* AI Summary */}
+                {article.aiSummary && (
+                  <div className="space-y-2">
+                    <h4 className="text-sm font-medium text-foreground/80">
+                      Summary
+                    </h4>
+                    <p className="text-sm text-foreground/70 line-clamp-3">
+                      {article.aiSummary}
+                    </p>
+                  </div>
+                )}
+
+                {/* Tags */}
+                {article.tags && article.tags.length > 0 && (
+                  <div className="space-y-2">
+                    <h4 className="text-sm font-medium text-foreground/80">
+                      Tags
+                    </h4>
+                    <div className="flex flex-wrap gap-1">
+                      {(expandedTags.has(article._id)
+                        ? article.tags
+                        : article.tags.slice(0, 4)
+                      ).map((tag, index) => (
+                        <span
+                          key={index}
+                          className={`inline-flex items-center justify-center rounded-base border-2 px-2.5 py-0.5 text-xs font-base w-fit whitespace-nowrap shrink-0 ${getTagColor(
+                            tag
+                          )}`}
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                      {article.tags.length > 4 && (
+                        <button
+                          onClick={() => toggleExpandTags(article._id)}
+                          className="inline-flex items-center justify-center rounded-base border-2 px-2.5 py-0.5 text-xs font-base w-fit whitespace-nowrap shrink-0 bg-secondary-background text-foreground border-border hover:bg-border/50 transition-colors cursor-pointer"
+                        >
+                          {expandedTags.has(article._id)
+                            ? 'Show less'
+                            : `+${article.tags.length - 4} more`}
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+
+              <CardFooter className="pt-0">
+                <div className="flex items-center justify-between w-full text-xs text-foreground/50">
+                  <span>
+                    {article.flashcards?.length || 0} flashcard
+                    {article.flashcards?.length !== 1 ? 's' : ''}
+                  </span>
+                  <div className="flex items-center gap-1">
+                    <Calendar className="size-3" />
+                    <span>
+                      {new Date(article._creationTime).toLocaleDateString()}
+                    </span>
                   </div>
                 </div>
-              )}
-            </CardContent>
-
-            <CardFooter className="pt-0">
-              <div className="flex items-center justify-between w-full text-xs text-foreground/50">
-                <span>
-                  {article.flashcards?.length || 0} flashcard
-                  {article.flashcards?.length !== 1 ? 's' : ''}
-                </span>
-                <div className="flex items-center gap-1">
-                  <Calendar className="size-3" />
-                  <span>
-                    {new Date(article._creationTime).toLocaleDateString()}
-                  </span>
-                </div>
-              </div>
-            </CardFooter>
-          </Card>
+              </CardFooter>
+            </Card>
+          </Link>
         ))}
       </div>
     </div>
