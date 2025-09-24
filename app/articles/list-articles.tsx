@@ -12,7 +12,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { ExternalLink, User, Calendar } from 'lucide-react';
 import { Search } from './search';
 import Link from 'next/link';
@@ -115,31 +114,38 @@ export function ListArticles(props: {
       {/* Articles Grid */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {articlesQuery.page.map((article) => (
-          <Link key={article._id} href={`/articles/${article._id}`}>
-            <Card className="h-fit hover:shadow-lg transition-shadow bg-secondary-background cursor-pointer">
-              <CardHeader>
-                <div className="flex items-start justify-between gap-2">
-                  <CardTitle className="line-clamp-2 text-lg">
+          <Card
+            key={article._id}
+            className="h-fit hover:shadow-lg transition-shadow bg-secondary-background cursor-pointer"
+          >
+            <CardHeader>
+              <div className="flex items-start justify-between gap-2">
+                <Link href={`/articles/${article._id}`} className="flex-1">
+                  <CardTitle className="line-clamp-2 text-lg hover:underline">
                     {article.title}
                   </CardTitle>
-                  <a
-                    href={article.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="shrink-0 p-1 hover:bg-secondary-background rounded-base transition-colors"
-                    title="Open original article"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <ExternalLink className="size-4" />
-                  </a>
-                </div>
-                {article.description && (
-                  <CardDescription className="line-clamp-3">
+                </Link>
+                <a
+                  href={article.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="shrink-0 p-1 hover:bg-secondary-background rounded-base transition-colors"
+                  title="Open original article"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <ExternalLink className="size-4" />
+                </a>
+              </div>
+              {article.description && (
+                <Link href={`/articles/${article._id}`}>
+                  <CardDescription className="line-clamp-3 hover:text-foreground/80 transition-colors">
                     {article.description}
                   </CardDescription>
-                )}
-              </CardHeader>
+                </Link>
+              )}
+            </CardHeader>
 
+            <Link href={`/articles/${article._id}`}>
               <CardContent className="space-y-4">
                 {/* Author */}
                 {article.author && (
@@ -183,7 +189,11 @@ export function ListArticles(props: {
                       ))}
                       {article.tags.length > 4 && (
                         <button
-                          onClick={() => toggleExpandTags(article._id)}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            toggleExpandTags(article._id);
+                          }}
                           className="inline-flex items-center justify-center rounded-base border-2 px-2.5 py-0.5 text-xs font-base w-fit whitespace-nowrap shrink-0 bg-secondary-background text-foreground border-border hover:bg-border/50 transition-colors cursor-pointer"
                         >
                           {expandedTags.has(article._id)
@@ -195,7 +205,9 @@ export function ListArticles(props: {
                   </div>
                 )}
               </CardContent>
+            </Link>
 
+            <Link href={`/articles/${article._id}`}>
               <CardFooter className="pt-0">
                 <div className="flex items-center justify-between w-full text-xs text-foreground/50">
                   <span>
@@ -210,8 +222,8 @@ export function ListArticles(props: {
                   </div>
                 </div>
               </CardFooter>
-            </Card>
-          </Link>
+            </Link>
+          </Card>
         ))}
       </div>
     </div>

@@ -60,6 +60,28 @@ export const listArticles = query({
   },
 });
 
+export const getArticleById = query({
+  args: { id: v.id('articles') },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) {
+      // Return undefined during auth loading - this is temporary
+      return undefined;
+    }
+
+    const article = await ctx.db.get(args.id);
+    if (!article) {
+      throw new ConvexError('Article not found');
+    }
+
+    if (article.userId !== identity.subject) {
+      throw new ConvexError('Unauthorized access to article');
+    }
+
+    return article;
+  },
+});
+
 export const updateArticle = mutation({
   args: { id: v.id('articles'), title: v.string() },
   handler: async (ctx, args) => {
