@@ -24,6 +24,8 @@ import {
 import Link from 'next/link';
 import { Preloaded, useConvexAuth, usePreloadedQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
+import { EditArticleDialog } from '../edit-article-dialog';
+import { DeleteArticleDialog } from '../delete-article-dialog';
 
 // Colorful badge variants for tags
 const tagColors = [
@@ -137,14 +139,32 @@ export function ArticleDetail({ preloadedArticle }: ArticleDetailProps) {
 
   return (
     <div className="space-y-8">
-      {/* Back Navigation */}
-      <div className="flex items-center gap-4">
+      {/* Back Navigation & Actions */}
+      <div className="flex items-center justify-between">
         <Link href="/articles">
           <Button variant="neutral" size="sm">
             <ArrowLeft className="size-4" />
             Back to Articles
           </Button>
         </Link>
+        <div className="flex items-center gap-2">
+          <EditArticleDialog
+            article={{
+              _id: articleQuery._id,
+              title: articleQuery.title,
+              author: articleQuery.author,
+              description: articleQuery.description,
+              aiSummary: articleQuery.aiSummary,
+              tags: articleQuery.tags,
+            }}
+          />
+          <DeleteArticleDialog
+            article={{
+              _id: articleQuery._id,
+              title: articleQuery.title,
+            }}
+          />
+        </div>
       </div>
 
       {/* Article Header */}

@@ -83,7 +83,14 @@ export const getArticleById = query({
 });
 
 export const updateArticle = mutation({
-  args: { id: v.id('articles'), title: v.string() },
+  args: {
+    id: v.id('articles'),
+    title: v.optional(v.string()),
+    author: v.optional(v.string()),
+    description: v.optional(v.string()),
+    aiSummary: v.optional(v.string()),
+    tags: v.optional(v.array(v.string())),
+  },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
 
@@ -96,7 +103,16 @@ export const updateArticle = mutation({
       throw new Error('Article not found or unauthorized');
     }
 
-    await ctx.db.patch(args.id, { title: args.title });
+    // Only update fields that are provided
+    const updateData: any = {};
+    if (args.title !== undefined) updateData.title = args.title;
+    if (args.author !== undefined) updateData.author = args.author;
+    if (args.description !== undefined)
+      updateData.description = args.description;
+    if (args.aiSummary !== undefined) updateData.aiSummary = args.aiSummary;
+    if (args.tags !== undefined) updateData.tags = args.tags;
+
+    await ctx.db.patch(args.id, updateData);
   },
 });
 
