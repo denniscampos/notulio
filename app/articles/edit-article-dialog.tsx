@@ -18,6 +18,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Edit } from 'lucide-react';
 import { toast } from 'sonner';
+import { Textarea } from '@/components/ui/textarea';
 
 interface EditArticleDialogProps {
   article: {
@@ -67,10 +68,9 @@ export function EditArticleDialog({ article }: EditArticleDialogProps) {
       setOpen(false);
       router.refresh();
     } catch (error) {
+      setIsLoading(false);
       console.error('Failed to update article:', error);
       toast.error('Failed to update article');
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -120,24 +120,22 @@ export function EditArticleDialog({ article }: EditArticleDialogProps) {
 
           <div className="space-y-2">
             <Label htmlFor="description">Description</Label>
-            <textarea
+            <Textarea
               id="description"
               value={formData.description}
               onChange={(e) => handleInputChange('description', e.target.value)}
               placeholder="Brief description of the article"
-              className="min-h-[80px] w-full rounded-base border-2 border-border bg-main px-4 py-2 font-base ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               rows={3}
             />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="aiSummary">AI Summary</Label>
-            <textarea
+            <Textarea
               id="aiSummary"
               value={formData.aiSummary}
               onChange={(e) => handleInputChange('aiSummary', e.target.value)}
               placeholder="AI-generated summary of the article"
-              className="min-h-[80px] w-full rounded-base border-2 border-border bg-main px-4 py-2 font-base ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               rows={3}
             />
           </div>
