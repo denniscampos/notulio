@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { SignOut } from './sign-out';
 import { getToken } from '@/lib/auth-server';
-import { ArticleDialog } from '@/app/articles/article-dialog';
+import { ArticleDialog } from '@/app/(main)/articles/article-dialog';
 import { buttonVariants } from './ui/button';
 
 export async function Header() {

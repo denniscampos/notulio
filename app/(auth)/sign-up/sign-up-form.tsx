@@ -2,6 +2,13 @@
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from '@/components/ui/card';
 import { authClient } from '@/lib/auth-client';
 import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -49,47 +56,82 @@ export function SignUpForm() {
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <Input
-          name="firstName"
-          type="firstName"
-          placeholder="First Name"
-          value={values.firstName}
-          onChange={(e) => setValues({ ...values, firstName: e.target.value })}
-        />
-        <Input
-          name="lastName"
-          type="lastName"
-          placeholder="Last Name"
-          value={values.lastName}
-          onChange={(e) => setValues({ ...values, lastName: e.target.value })}
-        />
-        <Input
-          name="email"
-          type="email"
-          placeholder="Email"
-          value={values.email}
-          onChange={(e) => setValues({ ...values, email: e.target.value })}
-        />
-        <Input
-          name="password"
-          type="password"
-          placeholder="Password"
-          value={values.password}
-          onChange={(e) => setValues({ ...values, password: e.target.value })}
-        />
-        <Button disabled={status === 'loading'} type="submit">
-          {status === 'loading' ? (
-            <>
-              <Loader2 className="animate-spin" /> Signing up...
-            </>
-          ) : (
-            'Sign Up'
+    <Card className="w-full max-w-md mx-auto">
+      <CardHeader className="text-center">
+        <CardTitle className="text-2xl font-bold">Create an account</CardTitle>
+        <CardDescription>
+          Sign up to get started with your account
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-2">
+              <Input
+                name="firstName"
+                type="text"
+                placeholder="First Name"
+                value={values.firstName}
+                onChange={(e) =>
+                  setValues({ ...values, firstName: e.target.value })
+                }
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Input
+                name="lastName"
+                type="text"
+                placeholder="Last Name"
+                value={values.lastName}
+                onChange={(e) =>
+                  setValues({ ...values, lastName: e.target.value })
+                }
+                required
+              />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Input
+              name="email"
+              type="email"
+              placeholder="Email"
+              value={values.email}
+              onChange={(e) => setValues({ ...values, email: e.target.value })}
+              required
+            />
+          </div>
+          <div className="space-y-2">
+            <Input
+              name="password"
+              type="password"
+              placeholder="Password"
+              value={values.password}
+              onChange={(e) =>
+                setValues({ ...values, password: e.target.value })
+              }
+              required
+            />
+          </div>
+          {status === 'error' && (
+            <div className="text-sm text-red-500 text-center">{error}</div>
           )}
-        </Button>
-      </form>
-      {status === 'error' ? <p className="sr-only">{error}</p> : null}
-    </div>
+          <Button
+            disabled={status === 'loading'}
+            type="submit"
+            className="w-full"
+          >
+            {status === 'loading' ? (
+              <>
+                <Loader2 className="animate-spin mr-2 h-4 w-4" />
+                Signing up...
+              </>
+            ) : (
+              'Sign Up'
+            )}
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
   );
 }
