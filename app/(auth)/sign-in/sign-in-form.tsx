@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/card';
 import { authClient } from '@/lib/auth-client';
 import { Loader2 } from 'lucide-react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -71,6 +72,14 @@ export function SignInForm() {
               }
               required
             />
+            <div className="text-right">
+              <Link
+                href="/forgot-password"
+                className="text-sm text-muted-foreground hover:text-primary"
+              >
+                Forgot Password?
+              </Link>
+            </div>
           </div>
           {status === 'error' && (
             <div className="text-sm text-red-500 text-center">{error}</div>

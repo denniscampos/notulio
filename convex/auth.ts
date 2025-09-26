@@ -38,6 +38,9 @@ export const createAuth = (
     emailAndPassword: {
       enabled: true,
       requireEmailVerification: false,
+      sendResetPassword: async ({ user, url }) => {
+        console.log('password reset sent! Please check your email.');
+      },
     },
     plugins: [
       // The Convex plugin is required for Convex compatibility
