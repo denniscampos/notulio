@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
-import { createArticleMetadata } from './actions';
+import { createArticleMetadata, extractArticleMetadata } from './actions';
+import { Loader2 } from 'lucide-react';
 
 type Status = 'idle' | 'loading' | 'success' | 'error';
 
@@ -12,7 +13,16 @@ export function ArticleForm() {
     e.preventDefault();
     setStatus('loading');
     try {
-      await createArticleMetadata({ url: articleURL });
+      // Extract metadata first, then create the article
+      const extractedData = await extractArticleMetadata({ url: articleURL });
+      await createArticleMetadata({
+        url: articleURL,
+        title: extractedData.title,
+        author: extractedData.author,
+        description: extractedData.description,
+        aiSummary: extractedData.summary || '',
+        tags: '', // No tags from the simple form
+      });
       setStatus('success');
     } catch (error) {
       setStatus('error');
@@ -29,9 +39,13 @@ export function ArticleForm() {
           onChange={(e) => setArticleURL(e.target.value)}
         />
         <button disabled={status === 'loading'}>
-          {status === 'loading'
-            ? 'Saving + summarizing...'
-            : 'Save + Summarize'}
+          {status === 'loading' ? (
+            <>
+              <Loader2 className="animate-spin" /> Saving + summarizing...
+            </>
+          ) : (
+            'Save + Summarize'
+          )}
         </button>
       </form>
       {status === 'error' ? (
