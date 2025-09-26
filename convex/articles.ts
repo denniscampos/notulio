@@ -47,6 +47,7 @@ export const listArticles = query({
         isDone: true,
         page: [],
         cursor: null,
+        continueCursor: null,
       };
     }
 

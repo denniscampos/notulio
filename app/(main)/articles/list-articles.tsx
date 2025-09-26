@@ -1,7 +1,12 @@
 'use client';
 
 import { api } from '@/convex/_generated/api';
-import { Preloaded, useConvexAuth, usePreloadedQuery } from 'convex/react';
+import {
+  Preloaded,
+  useConvexAuth,
+  usePreloadedQuery,
+  useQuery,
+} from 'convex/react';
 import { ArticleDialog } from './article-dialog';
 import { useEffect, useState } from 'react';
 import {
@@ -15,6 +20,7 @@ import {
 import { ExternalLink, User, Calendar } from 'lucide-react';
 import { Search } from './search';
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 // Colorful badge variants for tags
 const tagColors = [
@@ -50,9 +56,46 @@ export function ListArticles(props: {
   preloadedArticles: Preloaded<typeof api.articles.listArticles>;
 }) {
   const { isLoading, isAuthenticated } = useConvexAuth();
-  const articlesQuery = usePreloadedQuery(props.preloadedArticles);
-  const [articles, setArticles] = useState(articlesQuery);
+
+  const initialData = usePreloadedQuery(props.preloadedArticles);
+
+  const [allArticles, setAllArticles] = useState(initialData.page);
+  const [currentCursor, setCurrentCursor] = useState<string | null>(
+    initialData.continueCursor
+  );
+  const [isDone, setIsDone] = useState(initialData.isDone);
   const [expandedTags, setExpandedTags] = useState<Set<string>>(new Set());
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+
+  // Separate query for loading more pages
+  const loadMoreQuery = useQuery(
+    api.articles.listArticles,
+    currentCursor && isLoadingMore
+      ? {
+          paginationOpts: {
+            numItems: 5,
+            cursor: currentCursor,
+          },
+        }
+      : 'skip'
+  );
+
+  // Handle the load more query result
+  useEffect(() => {
+    if (loadMoreQuery && isLoadingMore) {
+      // Append new articles to existing ones
+      setAllArticles((prev) => [...prev, ...loadMoreQuery.page]);
+      setCurrentCursor(loadMoreQuery.continueCursor);
+      setIsDone(loadMoreQuery.isDone);
+      setIsLoadingMore(false);
+    }
+  }, [loadMoreQuery, isLoadingMore]);
+
+  // Function to trigger loading more articles
+  const handleLoadMore = () => {
+    if (!currentCursor || isDone || isLoadingMore) return;
+    setIsLoadingMore(true);
+  };
 
   const toggleExpandTags = (articleId: string) => {
     setExpandedTags((prev) => {
@@ -66,12 +109,6 @@ export function ListArticles(props: {
     });
   };
 
-  // useEffect(() => {
-  //   if (!isLoading) {
-  //     setArticles(articlesQuery);
-  //   }
-  // }, [articlesQuery, isLoading]);
-
   // Show loading state while fetching data
   if (isLoading) {
     return (
@@ -82,7 +119,7 @@ export function ListArticles(props: {
     );
   }
 
-  if (articles.page.length === 0 && isAuthenticated && !isLoading) {
+  if (allArticles.length === 0 && isAuthenticated && !isLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[400px] text-center">
         <h2 className="text-2xl font-heading mb-4">No articles yet</h2>
@@ -102,8 +139,9 @@ export function ListArticles(props: {
           <div className="space-y-1">
             <h1 className="text-2xl font-heading">My Articles</h1>
             <p className="text-foreground/60">
-              {articlesQuery.page.length} article
-              {articlesQuery.page.length !== 1 ? 's' : ''}
+              {allArticles.length} article
+              {allArticles.length !== 1 ? 's' : ''}
+              {!isDone && ' (more available)'}
             </p>
           </div>
           <ArticleDialog buttonText="Add Article" />
@@ -113,7 +151,7 @@ export function ListArticles(props: {
 
       {/* Articles Grid */}
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 auto-rows-fr">
-        {articlesQuery.page.map((article) => (
+        {allArticles.map((article) => (
           <Card
             key={article._id}
             className="flex flex-col hover:shadow-lg transition-shadow bg-secondary-background cursor-pointer"
@@ -136,13 +174,13 @@ export function ListArticles(props: {
                   <ExternalLink className="size-4" />
                 </a>
               </div>
-              {article.description && (
+              {article.description ? (
                 <Link href={`/articles/${article._id}`}>
                   <CardDescription className="line-clamp-3 hover:text-foreground/80 transition-colors">
                     {article.description}
                   </CardDescription>
                 </Link>
-              )}
+              ) : null}
             </CardHeader>
 
             <Link
@@ -151,15 +189,15 @@ export function ListArticles(props: {
             >
               <CardContent className="space-y-4 flex-1">
                 {/* Author */}
-                {article.author && (
+                {article.author ? (
                   <div className="flex items-center gap-2 text-sm text-foreground/60">
                     <User className="size-4" />
                     <span>{article.author}</span>
                   </div>
-                )}
+                ) : null}
 
                 {/* AI Summary */}
-                {article.aiSummary && (
+                {article.aiSummary ? (
                   <div className="space-y-2">
                     <h4 className="text-sm font-medium text-foreground/80">
                       Summary
@@ -168,7 +206,7 @@ export function ListArticles(props: {
                       {article.aiSummary}
                     </p>
                   </div>
-                )}
+                ) : null}
 
                 {/* Tags */}
                 {article.tags && article.tags.length > 0 && (
@@ -229,6 +267,27 @@ export function ListArticles(props: {
           </Card>
         ))}
       </div>
+
+      {/* Load More Button */}
+      {!isDone ? (
+        <div className="flex justify-center mt-8">
+          <Button
+            onClick={handleLoadMore}
+            disabled={isLoadingMore}
+            variant="neutral"
+            size="lg"
+          >
+            {isLoadingMore ? (
+              <>
+                <div className="animate-spin w-4 h-4 border-2 border-border border-t-foreground rounded-full mr-2" />
+                Loading...
+              </>
+            ) : (
+              'Load More Articles'
+            )}
+          </Button>
+        </div>
+      ) : null}
     </div>
   );
 }
