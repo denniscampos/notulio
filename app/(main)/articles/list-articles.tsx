@@ -97,9 +97,9 @@ export function ListArticles(props: {
   return (
     <div className="space-y-6">
       {/* Header with Add Button */}
-      <div>
+      <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <div>
+          <div className="space-y-1">
             <h1 className="text-2xl font-heading">My Articles</h1>
             <p className="text-foreground/60">
               {articlesQuery.page.length} article
@@ -112,11 +112,11 @@ export function ListArticles(props: {
       </div>
 
       {/* Articles Grid */}
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 auto-rows-fr">
         {articlesQuery.page.map((article) => (
           <Card
             key={article._id}
-            className="h-fit hover:shadow-lg transition-shadow bg-secondary-background cursor-pointer"
+            className="flex flex-col hover:shadow-lg transition-shadow bg-secondary-background cursor-pointer"
           >
             <CardHeader>
               <div className="flex items-start justify-between gap-2">
@@ -145,8 +145,11 @@ export function ListArticles(props: {
               )}
             </CardHeader>
 
-            <Link href={`/articles/${article._id}`}>
-              <CardContent className="space-y-4">
+            <Link
+              href={`/articles/${article._id}`}
+              className="flex-1 flex flex-col"
+            >
+              <CardContent className="space-y-4 flex-1">
                 {/* Author */}
                 {article.author && (
                   <div className="flex items-center gap-2 text-sm text-foreground/60">

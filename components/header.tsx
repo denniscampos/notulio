@@ -15,7 +15,7 @@ export async function Header() {
           Notulio
         </Link>
       </span>
-      <nav>
+      {/* <nav>
         <ul className="flex gap-4">
           <li>
             <Link href="/">Home</Link>
@@ -27,10 +27,9 @@ export async function Header() {
             <Link href="/contact">Contact</Link>
           </li>
         </ul>
-      </nav>
+      </nav> */}
 
       <div className="flex gap-4">
-        {isAuthed ? <ArticleDialog /> : null}
         {isAuthed ? (
           <SignOut />
         ) : (
