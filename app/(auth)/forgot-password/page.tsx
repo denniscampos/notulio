@@ -29,6 +29,7 @@ export default function ForgotPasswordPage() {
     try {
       await authClient.forgetPassword({
         email: email,
+        redirectTo: `${process.env.SITE_URL}/reset-password',`,
       });
       setStatus('success');
       toast.success('Password reset email sent.');
