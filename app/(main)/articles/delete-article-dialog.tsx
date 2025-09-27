@@ -50,7 +50,7 @@ export function DeleteArticleDialog({ article }: DeleteArticleDialogProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-red-500" size="sm">
+        <Button size="sm">
           <Trash2 className="size-4" />
           Delete
         </Button>
@@ -89,11 +89,7 @@ export function DeleteArticleDialog({ article }: DeleteArticleDialogProps) {
           >
             Cancel
           </Button>
-          <Button
-            className="bg-red-500"
-            onClick={handleDelete}
-            disabled={isDeleting}
-          >
+          <Button onClick={handleDelete} disabled={isDeleting}>
             {isDeleting ? (
               <>
                 <Loader2 className="animate-spin" />

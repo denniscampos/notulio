@@ -271,12 +271,7 @@ export function ListArticles(props: {
       {/* Load More Button */}
       {!isDone ? (
         <div className="flex justify-center mt-8">
-          <Button
-            onClick={handleLoadMore}
-            disabled={isLoadingMore}
-            variant="neutral"
-            size="lg"
-          >
+          <Button onClick={handleLoadMore} disabled={isLoadingMore} size="lg">
             {isLoadingMore ? (
               <>
                 <div className="animate-spin w-4 h-4 border-2 border-border border-t-foreground rounded-full mr-2" />

@@ -110,7 +110,7 @@ export function ArticleDetail({ preloadedArticle }: ArticleDetailProps) {
           {error.message || 'There was an error loading this article.'}
         </p>
         <Link href="/articles">
-          <Button variant="neutral">
+          <Button>
             <ArrowLeft className="size-4" />
             Back to Articles
           </Button>
@@ -128,7 +128,7 @@ export function ArticleDetail({ preloadedArticle }: ArticleDetailProps) {
           The article could not be loaded.
         </p>
         <Link href="/articles">
-          <Button variant="neutral">
+          <Button>
             <ArrowLeft className="size-4" />
             Back to Articles
           </Button>
@@ -142,7 +142,7 @@ export function ArticleDetail({ preloadedArticle }: ArticleDetailProps) {
       {/* Back Navigation & Actions */}
       <div className="flex items-center justify-between">
         <Link href="/articles">
-          <Button variant="neutral" size="sm">
+          <Button size="sm">
             <ArrowLeft className="size-4" />
             Back to Articles
           </Button>
