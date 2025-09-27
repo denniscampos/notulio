@@ -1,4 +1,5 @@
 import { Header } from '@/components/header';
+import { AutumnProvider } from 'autumn-js/react';
 
 export default function MainLayout({
   children,
@@ -7,8 +8,10 @@ export default function MainLayout({
 }) {
   return (
     <div>
-      <Header />
-      {children}
+      <AutumnProvider>
+        <Header />
+        {children}
+      </AutumnProvider>
     </div>
   );
 }
