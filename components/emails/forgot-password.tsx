@@ -32,7 +32,7 @@ export function ForgotPasswordTemplate({
 
           <Section style={content}>
             <Heading style={h2}>
-              {firstName ? `Hi ${firstName}! 🔐` : 'Password Reset 🔐'}
+              {firstName ? `Hi ${firstName}!` : 'Password Reset'}
             </Heading>
 
             <Text style={paragraph}>
