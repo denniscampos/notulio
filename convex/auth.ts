@@ -9,7 +9,7 @@ import authSchema from './betterAuth/schema';
 import { sendResetPassword } from './email';
 import { requireActionCtx } from '@convex-dev/better-auth/utils';
 
-const siteUrl = process.env.SITE_URL;
+const siteUrl = process.env.SITE_URL!;
 
 // The component client has methods needed for integrating Convex with Better Auth,
 // as well as helper methods for general use.
@@ -33,7 +33,7 @@ export const createAuth = (
     logger: {
       disabled: optionsOnly,
     },
-    trustedOrigins: [process.env.siteUrl!],
+    trustedOrigins: [siteUrl],
     baseURL: siteUrl,
     database: authComponent.adapter(ctx),
     // Configure simple, non-verified email/password to get started

@@ -29,6 +29,11 @@ interface ArticleData {
   description: string;
   aiSummary: string;
   tags: string; // comma-separated string
+  _aiData?: {
+    body?: string;
+    flashcards: Array<{ question: string; answer: string }>;
+    generatedTags: Array<string>;
+  };
 }
 
 interface ArticleDialogProps {
@@ -48,6 +53,7 @@ export function ArticleDialog({
     description: '',
     aiSummary: '',
     tags: '',
+    _aiData: undefined,
   });
   const router = useRouter();
 
@@ -69,6 +75,7 @@ export function ArticleDialog({
         description: extractedData.description,
         aiSummary: extractedData.summary || '',
         tags: extractedData.tags || '', // Populate AI-generated tags
+        _aiData: extractedData._aiData, // Store the complete AI data
       });
       setAutoFillStatus('success');
     } catch (error) {
@@ -80,7 +87,9 @@ export function ArticleDialog({
     e.preventDefault();
     setStatus('loading');
     try {
-      const skipAiProcessing = autoFillStatus !== 'success';
+      // Skip AI processing if we already have AI data from AI Fill, OR if AI Fill was never used
+      const skipAiProcessing =
+        !!articleData._aiData || autoFillStatus !== 'success';
       await createArticleMetadata(articleData, { skipAiProcessing });
       setStatus('success');
       setOpen(false);
@@ -92,6 +101,7 @@ export function ArticleDialog({
         description: '',
         aiSummary: '',
         tags: '',
+        _aiData: undefined,
       });
       setAutoFillStatus('idle');
       router.push('/articles');

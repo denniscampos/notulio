@@ -75,6 +75,12 @@ export async function extractArticleMetadata({ url }: { url: string }) {
     description: articleMetadata.description,
     summary: articleMetadata.summary,
     tags: data.tags.join(', '), // Convert tags array to comma-separated string
+    // Include the complete AI data to avoid reprocessing
+    _aiData: {
+      body: articleMetadata.body,
+      flashcards: data.flashcards,
+      generatedTags: data.tags,
+    },
   };
 }
 
@@ -86,6 +92,11 @@ export async function createArticleMetadata(
     description: string;
     aiSummary: string;
     tags: string; // comma-separated string
+    _aiData?: {
+      body?: string;
+      flashcards: Array<{ question: string; answer: string }>;
+      generatedTags: Array<string>;
+    };
   },
   options?: { skipAiProcessing?: boolean }
 ) {
@@ -98,7 +109,20 @@ export async function createArticleMetadata(
   let articleMetadata: ArticleMetadata | null = null;
   let data: FlashcardResponse = { flashcards: [], tags: [] };
 
-  if (!options?.skipAiProcessing) {
+  // Use pre-computed AI data if available (from AI Fill)
+  if (articleData._aiData) {
+    data = {
+      flashcards: articleData._aiData.flashcards,
+      tags: articleData._aiData.generatedTags,
+    };
+    articleMetadata = {
+      title: articleData.title,
+      author: articleData.author,
+      description: articleData.description,
+      summary: articleData.aiSummary,
+      body: articleData._aiData.body,
+    };
+  } else if (!options?.skipAiProcessing) {
     // Get article body content for flashcard generation (we still need the body for processing)
     articleMetadata = await getArticleMetadata({
       url: articleData.url,

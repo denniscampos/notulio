@@ -1,6 +1,7 @@
 'use client';
 
 import { api } from '@/convex/_generated/api';
+import { Doc } from '@/convex/_generated/dataModel';
 import {
   Preloaded,
   useConvexAuth,
@@ -59,13 +60,34 @@ export function ListArticles(props: {
 
   const initialData = usePreloadedQuery(props.preloadedArticles);
 
-  const [allArticles, setAllArticles] = useState(initialData.page);
+  const [additionalArticles, setAdditionalArticles] = useState<
+    Doc<'articles'>[]
+  >([]);
   const [currentCursor, setCurrentCursor] = useState<string | null>(
     initialData.continueCursor
   );
   const [isDone, setIsDone] = useState(initialData.isDone);
   const [expandedTags, setExpandedTags] = useState<Set<string>>(new Set());
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+
+  // Combine reactive first page with manually loaded additional pages
+  const allArticles = [...initialData.page, ...additionalArticles];
+
+  // Sync pagination state when initialData changes
+  useEffect(() => {
+    setCurrentCursor(initialData.continueCursor);
+    setIsDone(initialData.isDone);
+    // Reset additional articles if the first page changed significantly
+    // (e.g., if we're starting fresh or data was reset)
+    if (additionalArticles.length > 0 && initialData.page.length === 0) {
+      setAdditionalArticles([]);
+    }
+  }, [
+    initialData.continueCursor,
+    initialData.isDone,
+    initialData.page.length,
+    additionalArticles.length,
+  ]);
 
   // Separate query for loading more pages
   const loadMoreQuery = useQuery(
@@ -83,8 +105,8 @@ export function ListArticles(props: {
   // Handle the load more query result
   useEffect(() => {
     if (loadMoreQuery && isLoadingMore) {
-      // Append new articles to existing ones
-      setAllArticles((prev) => [...prev, ...loadMoreQuery.page]);
+      // Append new articles to additional articles
+      setAdditionalArticles((prev) => [...prev, ...loadMoreQuery.page]);
       setCurrentCursor(loadMoreQuery.continueCursor);
       setIsDone(loadMoreQuery.isDone);
       setIsLoadingMore(false);
