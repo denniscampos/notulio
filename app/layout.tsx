@@ -4,6 +4,7 @@ import './globals.css';
 import { ConvexClientProvider } from '@/providers/convex-client-provider';
 import { Header } from '@/components/header';
 import { Toaster } from '@/components/ui/sonner';
+import Script from 'next/script';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -34,6 +35,11 @@ export default function RootLayout({
           {children}
           <Toaster />
         </ConvexClientProvider>
+        <Script
+          defer
+          src="https://umami.epicvibes.xyz/script.js"
+          data-website-id="efec5a9c-e57c-4a91-8342-be353051c74c"
+        />
       </body>
     </html>
   );
