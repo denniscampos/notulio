@@ -48,7 +48,9 @@ export function SignInForm() {
   return (
     <Card className="w-full max-w-md mx-auto">
       <CardHeader className="text-center">
-        <CardTitle className="text-2xl font-bold">Welcome back</CardTitle>
+        <CardTitle className="text-2xl font-bold">
+          Welcome back to Notulio
+        </CardTitle>
         <CardDescription>Sign in to your account to continue</CardDescription>
       </CardHeader>
       <CardContent>
@@ -99,6 +101,17 @@ export function SignInForm() {
             )}
           </Button>
         </form>
+        <div className="text-center mt-4">
+          <span className="text-sm text-muted-foreground">
+            Don't have an account?{' '}
+            <Link
+              href="/sign-up"
+              className="text-primary hover:underline font-medium"
+            >
+              Sign up here
+            </Link>
+          </span>
+        </div>
       </CardContent>
     </Card>
   );

@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/card';
 import { authClient } from '@/lib/auth-client';
 import { Loader2 } from 'lucide-react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -131,6 +132,17 @@ export function SignUpForm() {
             )}
           </Button>
         </form>
+        <div className="text-center mt-4">
+          <span className="text-sm text-muted-foreground">
+            Already have an account?{' '}
+            <Link
+              href="/sign-in"
+              className="text-primary hover:underline font-medium"
+            >
+              Sign in
+            </Link>
+          </span>
+        </div>
       </CardContent>
     </Card>
   );
