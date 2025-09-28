@@ -7,23 +7,92 @@ export default async function HomePage() {
   const isAuthed = !!token;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-main/10">
-      {/* Hero Section */}
-      <section className="flex flex-col items-center justify-center px-4 py-16 text-center min-h-[80vh]">
+    <div className="h-screen bg-gradient-to-br from-background via-background to-main/10 flex flex-col">
+      {/* Hero Section - Takes most of the viewport */}
+      <section className="flex-1 flex flex-col items-center justify-center px-4 text-center">
         <div className="max-w-4xl mx-auto space-y-8">
           {/* Logo/Brand */}
           <div className="space-y-4">
-            <h1 className="text-6xl md:text-8xl font-heading text-foreground tracking-tight">
+            <h1 className="text-5xl md:text-7xl font-heading text-foreground tracking-tight">
               Notulio
             </h1>
-            <p className="text-xl md:text-2xl text-foreground/80 max-w-2xl mx-auto leading-relaxed">
-              Your intelligent article management platform. Organize, discover,
-              and manage your content with ease.
+            <p className="text-xl md:text-2xl text-foreground/80 max-w-3xl mx-auto leading-relaxed">
+              Save any web article with a URL. Get AI summaries, flashcards, and
+              organized tags automatically.
             </p>
           </div>
 
+          {/* Key Features - Compact */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto py-8">
+            <div className="text-center space-y-2">
+              <div className="w-12 h-12 bg-main rounded-full mx-auto flex items-center justify-center">
+                <svg
+                  className="w-6 h-6 text-main-foreground"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold">Web Scraping</h3>
+              <p className="text-sm text-foreground/70">
+                Extract content from any article URL
+              </p>
+            </div>
+
+            <div className="text-center space-y-2">
+              <div className="w-12 h-12 bg-main rounded-full mx-auto flex items-center justify-center">
+                <svg
+                  className="w-6 h-6 text-main-foreground"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold">AI Summaries</h3>
+              <p className="text-sm text-foreground/70">
+                Get intelligent summaries powered by OpenAI
+              </p>
+            </div>
+
+            <div className="text-center space-y-2">
+              <div className="w-12 h-12 bg-main rounded-full mx-auto flex items-center justify-center">
+                <svg
+                  className="w-6 h-6 text-main-foreground"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold">Study Flashcards</h3>
+              <p className="text-sm text-foreground/70">
+                Auto-generated flashcards for active learning
+              </p>
+            </div>
+          </div>
+
           {/* Call to Action */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
             {isAuthed ? (
               <Link href="/articles">
                 <Button size="lg" className="text-lg px-8 py-6">
@@ -34,7 +103,7 @@ export default async function HomePage() {
               <>
                 <Link href="/sign-up">
                   <Button size="lg" className="text-lg px-8 py-6">
-                    Get Started Free
+                    Start Learning
                   </Button>
                 </Link>
                 <Link href="/sign-in">
@@ -51,119 +120,6 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
-
-      {/* Features Section */}
-      <section className="px-4 py-16 max-w-6xl mx-auto">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-heading text-foreground mb-4">
-            Why Choose Notulio?
-          </h2>
-          <p className="text-lg text-foreground/70 max-w-2xl mx-auto">
-            Powerful features designed to streamline your article management
-            workflow
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-3 gap-8">
-          {/* Feature 1 */}
-          <div className="bg-secondary-background border-2 border-border rounded-base p-8 shadow-shadow hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none transition-all">
-            <div className="w-12 h-12 bg-main rounded-base mb-6 flex items-center justify-center">
-              <svg
-                className="w-6 h-6 text-main-foreground"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                />
-              </svg>
-            </div>
-            <h3 className="text-xl font-heading text-foreground mb-4">
-              Organize Content
-            </h3>
-            <p className="text-foreground/70">
-              Keep your articles structured and easily accessible with powerful
-              organization tools.
-            </p>
-          </div>
-
-          {/* Feature 2 */}
-          <div className="bg-secondary-background border-2 border-border rounded-base p-8 shadow-shadow hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none transition-all">
-            <div className="w-12 h-12 bg-main rounded-base mb-6 flex items-center justify-center">
-              <svg
-                className="w-6 h-6 text-main-foreground"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                />
-              </svg>
-            </div>
-            <h3 className="text-xl font-heading text-foreground mb-4">
-              Smart Search
-            </h3>
-            <p className="text-foreground/70">
-              Find exactly what you're looking for with advanced search and
-              filtering capabilities.
-            </p>
-          </div>
-
-          {/* Feature 3 */}
-          <div className="bg-secondary-background border-2 border-border rounded-base p-8 shadow-shadow hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none transition-all">
-            <div className="w-12 h-12 bg-main rounded-base mb-6 flex items-center justify-center">
-              <svg
-                className="w-6 h-6 text-main-foreground"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M13 10V3L4 14h7v7l9-11h-7z"
-                />
-              </svg>
-            </div>
-            <h3 className="text-xl font-heading text-foreground mb-4">
-              Lightning Fast
-            </h3>
-            <p className="text-foreground/70">
-              Built for speed and efficiency. Access your content instantly,
-              anywhere, anytime.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      {!isAuthed && (
-        <section className="px-4 py-16 text-center bg-main/5 border-t-2 border-border">
-          <div className="max-w-3xl mx-auto space-y-6">
-            <h2 className="text-3xl md:text-4xl font-heading text-foreground">
-              Ready to get started?
-            </h2>
-            <p className="text-lg text-foreground/70">
-              Join thousands of users who trust Notulio for their content
-              management needs.
-            </p>
-            <Link href="/sign-up">
-              <Button size="lg" className="text-lg px-8 py-6">
-                Start Your Journey
-              </Button>
-            </Link>
-          </div>
-        </section>
-      )}
     </div>
   );
 }
