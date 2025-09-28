@@ -1,5 +1,4 @@
-// import { ArticleForm } from './article-form';
-import { fetchQuery, preloadQuery } from 'convex/nextjs';
+import { preloadQuery } from 'convex/nextjs';
 import { ListArticles } from './list-articles';
 import { api } from '@/convex/_generated/api';
 import { getToken } from '@/lib/auth-server';
@@ -11,10 +10,11 @@ export default async function ArticlesPage() {
     redirect('/sign-in');
   }
   const preloadedArticles = await preloadQuery(
-    api.articles.listArticles,
+    api.articles.searchArticles,
     {
+      searchQuery: '',
       paginationOpts: {
-        numItems: 5,
+        numItems: 10,
         cursor: null,
       },
     },

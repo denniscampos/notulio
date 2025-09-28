@@ -2,7 +2,19 @@ import { mutation } from './_generated/server';
 import { ConvexError, v } from 'convex/values';
 import { query } from './_generated/server';
 import { paginationOptsValidator } from 'convex/server';
-import { authComponent } from './auth';
+
+// Helper function to create search content
+function createSearchContent(
+  title: string,
+  description?: string,
+  author?: string,
+  tags: string[] = []
+): string {
+  return [title, description || '', author || '', ...tags]
+    .filter(Boolean)
+    .join(' ')
+    .toLowerCase();
+}
 
 export const createArticle = mutation({
   args: {
@@ -28,15 +40,24 @@ export const createArticle = mutation({
 
     const userId = identity.subject;
 
+    const searchContent = createSearchContent(
+      args.title,
+      args.description,
+      args.author,
+      args.tags
+    );
+
     return await ctx.db.insert('articles', {
       ...args,
       userId,
+      searchContent,
     });
   },
 });
 
-export const listArticles = query({
+export const searchArticles = query({
   args: {
+    searchQuery: v.string(),
     paginationOpts: paginationOptsValidator,
   },
   handler: async (ctx, args) => {
@@ -53,10 +74,19 @@ export const listArticles = query({
 
     const userId = user.subject;
 
+    if (!args.searchQuery.trim()) {
+      return await ctx.db
+        .query('articles')
+        .withIndex('userId', (q) => q.eq('userId', userId))
+        .order('desc')
+        .paginate(args.paginationOpts);
+    }
+
     return await ctx.db
       .query('articles')
-      .withIndex('userId', (q) => q.eq('userId', userId))
-      .order('desc')
+      .withSearchIndex('search_articles', (q) =>
+        q.search('searchContent', args.searchQuery).eq('userId', userId)
+      )
       .paginate(args.paginationOpts);
   },
 });
@@ -112,6 +142,25 @@ export const updateArticle = mutation({
       updateData.description = args.description;
     if (args.aiSummary !== undefined) updateData.aiSummary = args.aiSummary;
     if (args.tags !== undefined) updateData.tags = args.tags;
+
+    // Update search content if any searchable fields changed
+    if (
+      args.title !== undefined ||
+      args.description !== undefined ||
+      args.tags !== undefined ||
+      args.author !== undefined
+    ) {
+      const newTitle = args.title ?? article.title;
+      const newDescription = args.description ?? article.description;
+      const newTags = args.tags ?? article.tags;
+      const newAuthor = args.author ?? article.author;
+      updateData.searchContent = createSearchContent(
+        newTitle,
+        newDescription,
+        newAuthor,
+        newTags
+      );
+    }
 
     await ctx.db.patch(args.id, updateData);
   },

@@ -17,5 +17,11 @@ export default defineSchema({
         answer: v.string(),
       })
     ),
-  }).index('userId', ['userId']),
+    searchContent: v.optional(v.string()),
+  })
+    .index('userId', ['userId'])
+    .searchIndex('search_articles', {
+      searchField: 'searchContent',
+      filterFields: ['userId'],
+    }),
 });
