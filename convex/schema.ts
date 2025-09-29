@@ -11,6 +11,7 @@ export default defineSchema({
     body: v.optional(v.string()),
     userId: v.string(),
     tags: v.array(v.string()),
+    images: v.optional(v.array(v.string())),
     flashcards: v.array(
       v.object({
         question: v.string(),

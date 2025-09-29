@@ -25,6 +25,7 @@ export const createArticle = mutation({
     aiSummary: v.optional(v.string()),
     body: v.optional(v.string()),
     tags: v.array(v.string()),
+    images: v.optional(v.array(v.string())),
     flashcards: v.array(
       v.object({
         question: v.string(),

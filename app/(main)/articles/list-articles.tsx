@@ -268,6 +268,36 @@ export function ListArticles(props: {
                       </div>
                     ) : null}
 
+                    {/* Images */}
+                    {article.images && article.images.length > 0 && (
+                      <div className="space-y-2">
+                        <h4 className="text-sm font-medium text-foreground/80">
+                          Images
+                        </h4>
+                        <div className="flex gap-2 overflow-x-auto">
+                          {article.images.slice(0, 3).map((imageUrl, index) => (
+                            <img
+                              key={index}
+                              src={imageUrl}
+                              alt={`Article image ${index + 1}`}
+                              className="w-16 h-16 object-cover rounded-base border border-border shrink-0"
+                              onError={(e) => {
+                                (e.target as HTMLImageElement).style.display =
+                                  'none';
+                              }}
+                            />
+                          ))}
+                          {article.images.length > 3 && (
+                            <div className="w-16 h-16 bg-secondary-background border border-border rounded-base flex items-center justify-center shrink-0">
+                              <span className="text-xs text-foreground/60">
+                                +{article.images.length - 3}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
                     {/* Tags */}
                     {article.tags && article.tags.length > 0 && (
                       <div className="space-y-2">

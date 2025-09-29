@@ -19,5 +19,6 @@ export async function getArticleMetadata({
     description: doc.metadata?.description ?? 'No description found',
     summary: doc.summary,
     body: doc.markdown,
+    images: doc.images || [],
   };
 }

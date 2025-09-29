@@ -18,6 +18,7 @@ import { createArticleMetadata, extractArticleMetadata } from './actions';
 import { Loader2, Sparkles } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Textarea } from '@/components/ui/textarea';
+import { ImageSelector } from './image-selector';
 
 type Status = 'idle' | 'loading' | 'success' | 'error';
 type AutoFillStatus = 'idle' | 'loading' | 'success' | 'error';
@@ -29,10 +30,12 @@ interface ArticleData {
   description: string;
   aiSummary: string;
   tags: string; // comma-separated string
+  selectedImages: string[];
   _aiData?: {
     body?: string;
     flashcards: Array<{ question: string; answer: string }>;
     generatedTags: Array<string>;
+    images?: string[];
   };
 }
 
@@ -53,6 +56,7 @@ export function ArticleDialog({
     description: '',
     aiSummary: '',
     tags: '',
+    selectedImages: [],
     _aiData: undefined,
   });
   const router = useRouter();
@@ -101,6 +105,7 @@ export function ArticleDialog({
         description: '',
         aiSummary: '',
         tags: '',
+        selectedImages: [],
         _aiData: undefined,
       });
       setAutoFillStatus('idle');
@@ -121,12 +126,19 @@ export function ArticleDialog({
       setAutoFillStatus('idle');
     }
   };
+
+  const handleImageSelectionChange = (selectedImages: string[]) => {
+    setArticleData((prev) => ({
+      ...prev,
+      selectedImages,
+    }));
+  };
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button>{buttonText}</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <form className="grid gap-4" onSubmit={handleArticleSubmit}>
           <DialogHeader>
             <DialogTitle>Add Article</DialogTitle>
@@ -255,6 +267,16 @@ export function ArticleDialog({
                 onChange={(e) => handleInputChange('aiSummary', e.target.value)}
               />
             </div>
+
+            {/* Image Selection */}
+            {articleData._aiData?.images &&
+              articleData._aiData.images.length > 0 && (
+                <ImageSelector
+                  images={articleData._aiData.images}
+                  selectedImages={articleData.selectedImages}
+                  onSelectionChange={handleImageSelectionChange}
+                />
+              )}
           </div>
 
           <DialogFooter>

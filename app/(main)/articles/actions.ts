@@ -19,6 +19,7 @@ interface ArticleMetadata {
   description: string;
   summary: string | undefined;
   body: string | undefined;
+  images: string[];
 }
 
 // Cache to avoid duplicate API calls
@@ -59,7 +60,7 @@ async function getFlashcardData(
 export async function extractArticleMetadata({ url }: { url: string }) {
   const articleMetadata = await getArticleMetadata({
     url,
-    formats: ['summary', 'markdown'],
+    formats: ['summary', 'markdown', 'images'],
   });
 
   // Generate tags and flashcards (cached)
@@ -80,6 +81,7 @@ export async function extractArticleMetadata({ url }: { url: string }) {
       body: articleMetadata.body,
       flashcards: data.flashcards,
       generatedTags: data.tags,
+      images: articleMetadata.images,
     },
   };
 }
@@ -92,10 +94,12 @@ export async function createArticleMetadata(
     description: string;
     aiSummary: string;
     tags: string; // comma-separated string
+    selectedImages?: string[]; // user-selected images
     _aiData?: {
       body?: string;
       flashcards: Array<{ question: string; answer: string }>;
       generatedTags: Array<string>;
+      images?: string[]; // all available images from extraction
     };
   },
   options?: { skipAiProcessing?: boolean }
@@ -121,12 +125,13 @@ export async function createArticleMetadata(
       description: articleData.description,
       summary: articleData.aiSummary,
       body: articleData._aiData.body,
+      images: articleData._aiData.images || [],
     };
   } else if (!options?.skipAiProcessing) {
     // Get article body content for flashcard generation (we still need the body for processing)
     articleMetadata = await getArticleMetadata({
       url: articleData.url,
-      formats: ['summary', 'markdown'],
+      formats: ['summary', 'markdown', 'images'],
     });
 
     // Generate flashcards and tags (use cache if available)
@@ -153,6 +158,7 @@ export async function createArticleMetadata(
         body: articleMetadata?.body, // Still save the body but don't expose it in the form
         flashcards: data.flashcards,
         tags: allTags,
+        images: articleData.selectedImages, // Only save user-selected images
       },
       { token }
     );

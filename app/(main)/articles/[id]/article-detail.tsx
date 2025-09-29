@@ -20,6 +20,7 @@ import {
   Clock,
   ChevronDown,
   ChevronUp,
+  Image as ImageIcon,
 } from 'lucide-react';
 import Link from 'next/link';
 import { Preloaded, useConvexAuth, usePreloadedQuery } from 'convex/react';
@@ -262,6 +263,47 @@ export function ArticleDetail({ preloadedArticle }: ArticleDetailProps) {
             <p className="text-foreground/80 leading-relaxed">
               {articleQuery.aiSummary}
             </p>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Images */}
+      {articleQuery.images && articleQuery.images.length > 0 && (
+        <Card className="bg-white">
+          <CardHeader>
+            <div className="flex items-center gap-2">
+              <ImageIcon className="size-5" />
+              <CardTitle className="text-xl">
+                Images ({articleQuery.images.length})
+              </CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {articleQuery.images.map((imageUrl, index) => (
+                <div key={index} className="space-y-2">
+                  <Link
+                    href={imageUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block hover:opacity-80 transition-opacity cursor-pointer"
+                    title="Click to open image in new tab"
+                  >
+                    <img
+                      src={imageUrl}
+                      alt={`Article image ${index + 1}`}
+                      className="w-full aspect-video object-cover rounded-lg border border-border hover:shadow-lg transition-shadow"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = 'none';
+                      }}
+                    />
+                  </Link>
+                  <div className="text-xs text-foreground/60 text-center">
+                    Image {index + 1}
+                  </div>
+                </div>
+              ))}
+            </div>
           </CardContent>
         </Card>
       )}
