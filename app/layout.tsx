@@ -57,7 +57,7 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: '/opengraph-image',
+        url: '/opengraph-image.png',
         width: 1200,
         height: 630,
         alt: 'Notulio - Transform your reading into active learning',
@@ -69,7 +69,7 @@ export const metadata: Metadata = {
     title: 'Notulio - AI-Powered Article Learning Platform',
     description:
       'Save any web article with a URL. Get AI summaries, flashcards, and organized tags automatically.',
-    images: ['/opengraph-image'],
+    images: ['/opengraph-image.png'],
   },
   robots: {
     index: true,
