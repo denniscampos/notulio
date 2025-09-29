@@ -157,6 +157,7 @@ export function ArticleDetail({ preloadedArticle }: ArticleDetailProps) {
               description: articleQuery.description,
               aiSummary: articleQuery.aiSummary,
               tags: articleQuery.tags,
+              images: articleQuery.images,
             }}
           />
           <DeleteArticleDialog

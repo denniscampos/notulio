@@ -122,6 +122,7 @@ export const updateArticle = mutation({
     description: v.optional(v.string()),
     aiSummary: v.optional(v.string()),
     tags: v.optional(v.array(v.string())),
+    images: v.optional(v.array(v.string())),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -143,6 +144,7 @@ export const updateArticle = mutation({
       updateData.description = args.description;
     if (args.aiSummary !== undefined) updateData.aiSummary = args.aiSummary;
     if (args.tags !== undefined) updateData.tags = args.tags;
+    if (args.images !== undefined) updateData.images = args.images;
 
     // Update search content if any searchable fields changed
     if (

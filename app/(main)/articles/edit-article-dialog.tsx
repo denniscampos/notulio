@@ -16,7 +16,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Edit } from 'lucide-react';
+import { Edit, X, Image as ImageIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import { Textarea } from '@/components/ui/textarea';
 
@@ -28,6 +28,7 @@ interface EditArticleDialogProps {
     description?: string;
     aiSummary?: string;
     tags?: string[];
+    images?: string[];
   };
 }
 
@@ -41,6 +42,9 @@ export function EditArticleDialog({ article }: EditArticleDialogProps) {
     aiSummary: article.aiSummary || '',
     tags: article.tags?.join(', ') || '',
   });
+  const [currentImages, setCurrentImages] = useState<string[]>(
+    article.images || []
+  );
 
   const updateArticle = useMutation(api.articles.updateArticle);
   const router = useRouter();
@@ -62,6 +66,7 @@ export function EditArticleDialog({ article }: EditArticleDialogProps) {
         description: formData.description || undefined,
         aiSummary: formData.aiSummary || undefined,
         tags: tagsArray,
+        images: currentImages,
       });
 
       toast.success('Article updated successfully');
@@ -79,6 +84,10 @@ export function EditArticleDialog({ article }: EditArticleDialogProps) {
       ...prev,
       [field]: value,
     }));
+  };
+
+  const removeImage = (imageUrl: string) => {
+    setCurrentImages((prev) => prev.filter((url) => url !== imageUrl));
   };
 
   return (
@@ -152,6 +161,44 @@ export function EditArticleDialog({ article }: EditArticleDialogProps) {
               Separate tags with commas
             </p>
           </div>
+
+          {/* Images Management */}
+          {currentImages.length > 0 && (
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <ImageIcon className="size-4" />
+                <Label>Current Images ({currentImages.length})</Label>
+              </div>
+              <div className="grid grid-cols-2 gap-3 max-h-48 overflow-y-auto">
+                {currentImages.map((imageUrl, index) => (
+                  <div
+                    key={index}
+                    className="relative group border-2 border-border rounded-lg overflow-hidden"
+                  >
+                    <img
+                      src={imageUrl}
+                      alt={`Article image ${index + 1}`}
+                      className="aspect-video object-cover w-full"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = 'none';
+                      }}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeImage(imageUrl)}
+                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-80 hover:opacity-100 transition-opacity"
+                      title="Remove image"
+                    >
+                      <X className="size-3" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+              <p className="text-sm text-foreground/60">
+                Click the X button to remove images you no longer want.
+              </p>
+            </div>
+          )}
 
           <div className="flex justify-end gap-3 pt-4">
             <Button
