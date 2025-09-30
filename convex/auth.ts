@@ -33,6 +33,12 @@ export const createAuth = (
     logger: {
       disabled: optionsOnly,
     },
+    account: {
+      accountLinking: {
+        enabled: true,
+        allowDifferentEmails: true,
+      },
+    },
     trustedOrigins: [siteUrl],
     baseURL: siteUrl,
     database: authComponent.adapter(ctx),
@@ -55,6 +61,14 @@ export const createAuth = (
           email: user.email,
           resetUrl: url,
         });
+      },
+    },
+    socialProviders: {
+      google: {
+        clientId: process.env.GOOGLE_CLIENT_ID as string,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+        accessType: 'offline',
+        prompt: 'select_account consent',
       },
     },
     plugins: [

@@ -15,6 +15,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { GoogleProvider } from '../google-provider';
 
 type Status = 'idle' | 'loading' | 'success' | 'error';
 
@@ -133,6 +134,7 @@ export function SignUpForm() {
               'Sign Up'
             )}
           </Button>
+          <GoogleProvider />
         </form>
         <div className="text-center mt-4">
           <span className="text-sm text-muted-foreground">
