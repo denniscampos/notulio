@@ -38,7 +38,6 @@ async function getFlashcardData(
     return flashcardCache.get(cacheKey)!;
   }
 
-  // Make API call
   const response = await fetch(`${process.env.SITE_URL}/api/flashcard`, {
     method: 'POST',
     body: JSON.stringify({
@@ -75,7 +74,7 @@ export async function extractArticleMetadata({ url }: { url: string }) {
     author: articleMetadata.author,
     description: articleMetadata.description,
     summary: articleMetadata.summary,
-    tags: data.tags.join(', '), // Convert tags array to comma-separated string
+    tags: data.tags.join(', '),
     // Include the complete AI data to avoid reprocessing
     _aiData: {
       body: articleMetadata.body,

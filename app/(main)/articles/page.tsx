@@ -22,7 +22,6 @@ export default async function ArticlesPage() {
   );
   return (
     <div className="mx-auto max-w-7xl py-10 px-4">
-      {/* <ArticleForm /> */}
       <ListArticles preloadedArticles={preloadedArticles} />
     </div>
   );
