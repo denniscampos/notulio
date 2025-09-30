@@ -13,21 +13,21 @@ import {
 
 interface EmailVerificationTemplateProps {
   firstName?: string;
-  verificationUrl: string;
+  url: string;
 }
 
 export function EmailVerificationTemplate({
   firstName,
-  verificationUrl,
+  url,
 }: EmailVerificationTemplateProps) {
   return (
     <Html>
       <Head />
-      <Preview>Verify your email address to access Moniflux</Preview>
+      <Preview>Verify your email address to access Notulio</Preview>
       <Body style={main}>
         <Container style={container}>
           <Section style={logoContainer}>
-            <Heading style={h1}>💰 Moniflux</Heading>
+            <Heading style={h1}>📚 Notulio</Heading>
           </Section>
 
           <Section style={content}>
@@ -36,8 +36,8 @@ export function EmailVerificationTemplate({
             </Heading>
 
             <Text style={paragraph}>
-              Thank you for signing up for Moniflux! We&apos;re excited to help
-              you take control of your finances.
+              Thank you for signing up for Notulio! We&apos;re excited to help
+              you organize and manage your notes effectively.
             </Text>
 
             <Text style={paragraph}>
@@ -46,7 +46,7 @@ export function EmailVerificationTemplate({
             </Text>
 
             <Section style={buttonContainer}>
-              <Button style={button} href={verificationUrl}>
+              <Button style={button} href={url}>
                 Verify Email Address
               </Button>
             </Section>
@@ -56,7 +56,7 @@ export function EmailVerificationTemplate({
               link into your browser:
             </Text>
 
-            <Text style={linkText}>{verificationUrl}</Text>
+            <Text style={linkText}>{url}</Text>
 
             <Text style={paragraph}>
               This verification link will expire in 10 minutes for security
@@ -72,7 +72,7 @@ export function EmailVerificationTemplate({
           <Section style={footer}>
             <Text style={footerText}>
               You&apos;re receiving this email because someone signed up for
-              Moniflux with this email address. If this wasn&apos;t you, please
+              Notulio with this email address. If this wasn&apos;t you, please
               ignore this email.
             </Text>
             <Text style={footerText}>

@@ -42,9 +42,11 @@ export function SignUpForm() {
       {
         onSuccess: async (ctx) => {
           setStatus('success');
-          router.push('/articles');
+          router.push(`/check-email?email=${encodeURIComponent(values.email)}`);
           router.refresh();
-          toast.success('Successfully signed up');
+          toast.success(
+            'Account created! Please check your email to verify your account.'
+          );
         },
         onError: async (ctx) => {
           setStatus('error');

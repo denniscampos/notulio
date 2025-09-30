@@ -6,7 +6,7 @@ import { query, QueryCtx } from './_generated/server';
 import { betterAuth, BetterAuthOptions } from 'better-auth';
 import { headers } from 'next/headers';
 import authSchema from './betterAuth/schema';
-import { sendResetPassword } from './email';
+import { sendEmailVerification, sendResetPassword } from './email';
 import { requireActionCtx } from '@convex-dev/better-auth/utils';
 
 const siteUrl = process.env.SITE_URL!;
@@ -36,10 +36,19 @@ export const createAuth = (
     trustedOrigins: [siteUrl],
     baseURL: siteUrl,
     database: authComponent.adapter(ctx),
-    // Configure simple, non-verified email/password to get started
+    emailVerification: {
+      sendVerificationEmail: async ({ user, url }) => {
+        await sendEmailVerification(requireActionCtx(ctx), {
+          to: user.email,
+          url,
+          firstName: user.name?.split(' ')[0] || undefined,
+        });
+      },
+      autoSignInAfterVerification: true,
+    },
     emailAndPassword: {
       enabled: true,
-      requireEmailVerification: false,
+      requireEmailVerification: true,
       sendResetPassword: async ({ user, url }) => {
         await sendResetPassword(requireActionCtx(ctx), {
           firstName: user.name,
