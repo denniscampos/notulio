@@ -38,7 +38,7 @@ async function getFlashcardData(
     return flashcardCache.get(cacheKey)!;
   }
 
-  const response = await fetch(`${process.env.SITE_URL}/api/flashcard`, {
+  const response = await fetch(`${process.env.SITE_URL}/api/article-insights`, {
     method: 'POST',
     body: JSON.stringify({
       title,
