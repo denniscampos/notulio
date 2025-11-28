@@ -6,6 +6,7 @@
     "dev": "concurrently \"pnpm run dev:frontend\" \"pnpm run dev:backend\"",
     "dev:backend": "convex dev --typecheck-components --live-component-sources",
     "dev:frontend": "next dev --turbopack",
+    "dev:env": "convex env set",
     "build": "next build --turbopack",
     "start": "next start"
   },

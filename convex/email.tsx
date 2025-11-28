@@ -2,15 +2,15 @@ import { render } from '@react-email/render';
 import { components } from './_generated/api';
 import { Resend } from '@convex-dev/resend';
 import { ForgotPasswordTemplate } from '@/components/emails/forgot-password';
-import { RunActionCtx } from '@convex-dev/better-auth';
 import { EmailVerificationTemplate } from '@/components/emails/email-verification';
+import { ActionCtx } from './_generated/server';
 
 export const resend: Resend = new Resend(components.resend, {
   testMode: false,
 });
 
 export async function sendResetPassword(
-  ctx: RunActionCtx,
+  ctx: ActionCtx,
   {
     firstName,
     email,
@@ -30,12 +30,22 @@ export async function sendResetPassword(
 }
 
 export async function sendEmailVerification(
-  ctx: RunActionCtx,
+  ctx: ActionCtx,
   { to, url, firstName }: { to: string; url: string; firstName?: string }
 ) {
   const urlWithCallback = new URL(url);
   const siteUrl = process.env.SITE_URL;
   urlWithCallback.searchParams.set('callbackURL', `${siteUrl}/email-verified`);
+
+  const isProduction = process.env.IS_PRODUCTION === 'true';
+
+  if (!isProduction) {
+    console.log(
+      '[DEV] Skipping email, verification URL:',
+      urlWithCallback.toString()
+    );
+    return;
+  }
 
   await resend.sendEmail(ctx, {
     from: 'Notulio <admin@notifications.notulio.com>',
