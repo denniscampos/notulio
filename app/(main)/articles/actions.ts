@@ -1,9 +1,25 @@
 'use server';
+
 import { api } from '@/convex/_generated/api';
 import { getToken } from '@/lib/auth-server';
 import { getArticleMetadata } from '@/lib/firecrawl';
+import { openai } from '@ai-sdk/openai';
+import { generateObject } from 'ai';
 import { fetchMutation } from 'convex/nextjs';
 import { revalidatePath } from 'next/cache';
+import z from 'zod';
+
+const articleInsightsSchema = z.object({
+  flashcards: z.array(
+    z.object({
+      question: z.string(),
+      answer: z.string(),
+    })
+  ),
+  tags: z
+    .array(z.string())
+    .describe('short keywords, lowercase, hyphen-separated'),
+});
 
 interface FlashcardResponse {
   flashcards: Array<{
@@ -38,17 +54,7 @@ async function getFlashcardData(
     return flashcardCache.get(cacheKey)!;
   }
 
-  const response = await fetch(`${process.env.SITE_URL}/api/article-insights`, {
-    method: 'POST',
-    body: JSON.stringify({
-      title,
-      description,
-      content,
-    }),
-    headers: { 'Content-Type': 'application/json' },
-  });
-
-  const data = (await response.json()) as FlashcardResponse;
+  const data = await createArticleInsights({ title, description, content });
 
   // Cache the result
   flashcardCache.set(cacheKey, data);
@@ -57,6 +63,11 @@ async function getFlashcardData(
 }
 
 export async function extractArticleMetadata({ url }: { url: string }) {
+  const token = await getToken();
+  if (!token) {
+    throw new Error('Unauthorized');
+  }
+
   const articleMetadata = await getArticleMetadata({
     url,
     formats: ['summary', 'markdown', 'images'],
@@ -103,6 +114,11 @@ export async function createArticleMetadata(
   },
   options?: { skipAiProcessing?: boolean }
 ) {
+  const token = await getToken();
+  if (!token) {
+    throw new Error('Unauthorized');
+  }
+
   // Convert comma-separated tags to array for database
   const tagStrings = articleData.tags
     .split(',')
@@ -145,7 +161,6 @@ export async function createArticleMetadata(
   const allTags = [...new Set([...tagStrings, ...data.tags])];
 
   try {
-    const token = await getToken();
     await fetchMutation(
       api.articles.createArticle,
       {
@@ -165,4 +180,66 @@ export async function createArticleMetadata(
   } catch (error) {
     console.error(error);
   }
+}
+
+export async function createArticleInsights({
+  title,
+  description,
+  content,
+}: {
+  title: string;
+  description: string;
+  content: string;
+}) {
+  const token = await getToken();
+  if (!token) {
+    throw new Error('Unauthorized');
+  }
+  const prompt = `
+  You are an assistant that generates concise learning aids.
+  
+  Given a page with:
+  Title: "${title}"
+  Description: "${description}"
+  Content: """${content || 'Content unavailable'}"""
+  
+  Tasks:
+  1. Generate 5–10 Q&A flashcards depending on the length of the article.
+     - Questions should be clear and concise.
+     - Answers should be short (1–3 sentences max).
+     - Focus on key ideas, definitions, or takeaways.
+  
+  2. Suggest 1 reflection question that connects this article to broader knowledge or real-world applications.
+     - It should encourage critical thinking, not be fact recall.
+  
+  3. Suggest 3–5 topical tags for this article.
+     - Tags must be short, simple labels suitable for human tagging.
+     - Prefer ONE word; allow TWO words only if very common (e.g. "machine learning").
+     - No symbols, no hyphens, no jargon, no academic phrases.
+     - Use lowercase.
+     - Think of tags like those seen on blogs or news sites.
+     - Examples:
+       Good: ["database", "css", "technews", "women", "games"]
+       Acceptable 2 words: ["machine learning", "climate change"]
+       Bad: ["database management", "query-operations", "technical-process"]
+  4. Write a 2-3 sentence neutral summary.
+  
+  Return JSON in this format:
+  {
+    "summary: "...",
+    "flashcards": [
+      { "question": "...", "answer": "..." }
+    ],
+    "reflection": "...",
+    "tags": ["...", "..."]
+  }
+  `;
+
+  const { object } = await generateObject({
+    model: openai('gpt-4o-mini'),
+    schema: articleInsightsSchema,
+    prompt,
+  });
+
+  return object;
 }
