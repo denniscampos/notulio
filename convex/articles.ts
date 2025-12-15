@@ -101,7 +101,7 @@ export const getArticleById = query({
       return undefined;
     }
 
-    const article = await ctx.db.get(args.id);
+    const article = await ctx.db.get('articles', args.id);
     if (!article) {
       throw new ConvexError('Article not found');
     }
@@ -131,7 +131,7 @@ export const updateArticle = mutation({
       throw new Error('Unauthorized');
     }
 
-    const article = await ctx.db.get(args.id);
+    const article = await ctx.db.get('articles', args.id);
     if (!article || article.userId !== identity.subject) {
       throw new Error('Article not found or unauthorized');
     }
@@ -165,7 +165,7 @@ export const updateArticle = mutation({
       );
     }
 
-    await ctx.db.patch(args.id, updateData);
+    await ctx.db.patch('articles', args.id, updateData);
   },
 });
 
@@ -178,7 +178,7 @@ export const removeArticle = mutation({
       throw new Error('Unauthorized');
     }
 
-    const article = await ctx.db.get(args.id);
+    const article = await ctx.db.get('articles', args.id);
     if (!article || article.userId !== identity.subject) {
       throw new Error('Article not found or unauthorized');
     }
